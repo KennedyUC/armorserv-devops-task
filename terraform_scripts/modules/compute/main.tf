@@ -14,9 +14,8 @@ resource "aws_lambda_function" "backend" {
 
   runtime = var.lambda_runtime
 
-  environment {
-    variables = {
-      Env = var.env
-    }
+  tags = {
+    Name = "${var.project_name}-${var.env}-node"
+    Env  = var.env
   }
 }

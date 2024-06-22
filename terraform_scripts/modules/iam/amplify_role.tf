@@ -16,6 +16,11 @@ resource "aws_iam_role" "amplify" {
       }
     ]
   })
+
+  tags = {
+    Name = "${var.project_name}-${var.env}-amplify"
+    Env  = var.env
+  }
 }
 
 resource "aws_iam_policy" "amplify" {
@@ -43,6 +48,11 @@ resource "aws_iam_policy" "amplify" {
       }
     ]
   })
+
+  tags = {
+    Name = "${var.project_name}-${var.env}-amplify"
+    Env  = var.env
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "amplify" {

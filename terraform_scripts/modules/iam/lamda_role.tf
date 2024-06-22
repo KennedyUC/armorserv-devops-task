@@ -16,6 +16,11 @@ resource "aws_iam_role" "lambda" {
       }
     ]
   })
+
+  tags = {
+    Name = "${var.project_name}-${var.env}-lambda"
+    Env  = var.env
+  }
 }
 
 resource "aws_iam_policy" "lambda" {
@@ -55,6 +60,11 @@ resource "aws_iam_policy" "lambda" {
       }
     ]
   })
+
+  tags = {
+    Name = "${var.project_name}-${var.env}-lambda"
+    Env  = var.env
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "lambda" {

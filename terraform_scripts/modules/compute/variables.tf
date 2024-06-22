@@ -3,6 +3,11 @@ variable "project_name" {
   type        = string
 }
 
+variable "env" {
+  description = "project environment"
+  type        = string
+}
+
 variable "backend_file_name" {
   description = "backend file name without extension"
   type        = string

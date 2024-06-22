@@ -16,6 +16,11 @@ resource "aws_iam_role" "rds" {
       }
     ]
   })
+
+  tags = {
+    Name = "${var.project_name}-${var.env}-rds"
+    Env  = var.env
+  }
 }
 
 resource "aws_iam_policy" "rds" {
@@ -35,6 +40,11 @@ resource "aws_iam_policy" "rds" {
       }
     ]
   })
+
+  tags = {
+    Name = "${var.project_name}-${var.env}-rds"
+    Env  = var.env
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "rds_policy_attachment" {
