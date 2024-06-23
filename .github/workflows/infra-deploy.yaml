@@ -57,7 +57,7 @@ jobs:
         id: aws-credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::033385331256:role/GHARole
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GHARole
           audience: sts.amazonaws.com
           aws-region: ${{ env.AWS_REGION }}
 
@@ -69,6 +69,9 @@ jobs:
             -backend-config="key=${{ env.ENV }}/terraform.tfstate" \
             -backend-config="region=${{ env.AWS_REGION }}"
         working-directory: ${{ env.WORK_DIR }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Terraform Format
         run: terraform fmt
@@ -79,11 +82,17 @@ jobs:
           terraform plan --var-file=${{ env.ENV }}-infra.tfvars -var="aws_region=${{ env.AWS_REGION }}" \
           -var="db_name=${{ secrets.DB_NAME }}" -var="db_username=${{ secrets.DB_USERNAME }}" -var="db_password=${{ secrets.DB_PASSWORD }}" \
           -out=plan.tfdata
-        working-directory: ${{ env.WORK_DIR }} 
+        working-directory: ${{ env.WORK_DIR }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve plan.tfdata
         working-directory: ${{ env.WORK_DIR }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       # - name: Terraform Destroy
       #   run: terraform destroy -auto-approve
