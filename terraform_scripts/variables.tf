@@ -88,13 +88,13 @@ variable "aws_region" {
   type        = string
 }
 
-variable "user_access_key" {
+variable "access_key" {
   description = "aws user access key"
   type        = string
   sensitive   = true
 }
 
-variable "user_secret_key" {
+variable "secret_key" {
   description = "aws user secret key"
   type        = string
   sensitive   = true

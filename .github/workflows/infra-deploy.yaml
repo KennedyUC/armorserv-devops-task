@@ -53,13 +53,13 @@ jobs:
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
 
-      - name: Configure AWS credentials
-        id: aws-credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/Infra-workflow
-          audience: sts.amazonaws.com
-          aws-region: ${{ env.AWS_REGION }}
+      # - name: Configure AWS credentials
+      #   id: aws-credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/Infra-workflow
+      #     audience: sts.amazonaws.com
+      #     aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Initialize
         run: |
@@ -69,31 +69,42 @@ jobs:
             -backend-config="key=${{ env.ENV }}/terraform.tfstate" \
             -backend-config="region=${{ env.AWS_REGION }}"
         working-directory: ${{ env.WORK_DIR }}
-        # env:
-        #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        env:
+          TF_VAR_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Terraform Format
         run: terraform fmt
         working-directory: ${{ env.WORK_DIR }} 
 
+      # - name: Terraform Plan
+      #   run: |
+      #     terraform plan --var-file=${{ env.ENV }}-infra.tfvars -var="aws_region=${{ env.AWS_REGION }}" \
+      #     -var="db_name=${{ secrets.DB_NAME }}" -var="db_username=${{ secrets.DB_USERNAME }}" -var="db_password=${{ secrets.DB_PASSWORD }}" \
+      #     -out=plan.tfdata
+      #   working-directory: ${{ env.WORK_DIR }}
       - name: Terraform Plan
-        run: |
-          terraform plan --var-file=${{ env.ENV }}-infra.tfvars -var="aws_region=${{ env.AWS_REGION }}" \
-          -var="db_name=${{ secrets.DB_NAME }}" -var="db_username=${{ secrets.DB_USERNAME }}" -var="db_password=${{ secrets.DB_PASSWORD }}" \
-          -out=plan.tfdata
+        run: terraform plan --var-file=${{ env.ENV }}-infra.tfvars -out=plan.tfdata
         working-directory: ${{ env.WORK_DIR }}
-        # env:
-        #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        env:
+          TF_VAR_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_aws_region: ${{ env.AWS_REGION }}
+          TF_VAR_db_name: ${{ secrets.DB_NAME }}
+          TF_VAR_db_username: ${{ secrets.DB_USERNAME }}
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+          
 
       - name: Terraform Apply
         run: terraform apply -auto-approve plan.tfdata
         working-directory: ${{ env.WORK_DIR }}
-        # env:
-        #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        env:
+          TF_VAR_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       # - name: Terraform Destroy
       #   run: terraform destroy -auto-approve
       #   working-directory: ${{ env.WORK_DIR }}
+      #   env:
+      #     TF_VAR_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     TF_VAR_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
