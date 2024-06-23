@@ -1,0 +1,89 @@
+name: Deploy AWS Infrastructure
+
+on:
+  push:
+    branches:
+    - main
+    - dev
+    - stg
+    paths:
+    - .github/workflows/infra-deploy.yaml
+    - terraform_scripts/*
+    - terraform_scripts/modules/*
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  setup-project-environment:
+    runs-on: ubuntu-latest
+    outputs:
+      env_name: ${{ steps.project-env.outputs.env_name }}
+    
+    steps:
+    - name: Set Project Environment
+      id: project-env
+      run: |
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          echo "env_name=prod" >> $GITHUB_OUTPUT
+        elif [ "${{ github.ref }}" = "refs/heads/dev" ]; then
+          echo "env_name=dev" >> $GITHUB_OUTPUT
+        elif [ "${{ github.ref }}" = "refs/heads/stg" ]; then
+          echo "env_name=stg" >> $GITHUB_OUTPUT
+        fi
+  
+  setup-project-infrastructure:
+    runs-on: ubuntu-latest
+    needs: [setup-project-environment]
+    environment: ${{ needs.setup-project-environment.outputs.env_name }}
+    env:
+      ENV: ${{ needs.setup-project-environment.outputs.env_name }}
+      WORK_DIR: ./terraform_scripts
+      TERRAFORM_VERSION: 1.7.3
+      AWS_REGION: us-east-1
+      TF_BACKEND_BUCKET: terraform-backend-1470
+  
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+      - name: Configure AWS credentials
+        id: aws-credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::033385331256:oidc-provider/token.actions.githubusercontent.com
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform Initialize
+        run: |
+          terraform init \
+            -reconfigure \
+            -backend-config="bucket=${{ env.TF_BACKEND_BUCKET }}" \
+            -backend-config="key=${{ env.ENV }}/terraform.tfstate" \
+            -backend-config="region=${{ env.AWS_REGION }}"
+        working-directory: ${{ env.WORK_DIR }}
+
+      - name: Terraform Format
+        run: terraform fmt
+        working-directory: ${{ env.WORK_DIR }} 
+
+      - name: Terraform Plan
+        run: |
+          terraform plan --var-file=${{ env.ENV }}-infra.tfvars -var="aws_region=${{ env.AWS_REGION }}" \
+          -var="db_name=${{ secrets.DB_NAME }}" -var="db_username=${{ secrets.DB_USERNAME }}" -var="db_password=${{ secrets.DB_PASSWORD }}" \
+          -out=plan.tfdata
+        working-directory: ${{ env.WORK_DIR }} 
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve plan.tfdata
+        working-directory: ${{ env.WORK_DIR }}
+
+      # - name: Terraform Destroy
+      #   run: terraform destroy -auto-approve
+      #   working-directory: ${{ env.WORK_DIR }}

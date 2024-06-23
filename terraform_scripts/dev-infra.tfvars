@@ -1,5 +1,5 @@
 project_name            = "devops-1470"
-env                     = "test"
+env                     = "dev"
 az_count                = 2
 vpc_cidr                = "10.0.0.0/16"
 enable_vpc_dns          = true
@@ -10,9 +10,3 @@ lambda_runtime          = "nodejs18.x"
 db_storage              = 30
 db_engine               = "mysql"
 db_instance             = "db.t3.micro"
-db_name                 = "test_db"
-db_username             = "test"
-db_password             = "XXXX"
-aws_region              = "us-east-1"
-user_access_key         = "XXXX"
-user_secret_key         = "XXXX"
