@@ -35,7 +35,7 @@ resource "aws_iam_policy" "amplify" {
           "s3:GetObject",
           "s3:PutObject"
         ],
-        Resource = "arn:aws:s3:::${var.bucket_name}/*",
+        Resource = "arn:aws:s3:::${var.artifact_bucket_name}/*",
         Effect   = "Allow"
       },
       {
