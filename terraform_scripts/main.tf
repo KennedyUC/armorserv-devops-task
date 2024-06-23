@@ -1,11 +1,11 @@
 module "iam_setup" {
-  source                        = "../modules/iam"
+  source                        = "modules/iam"
   project_name                  = var.project_name
   env                           = var.env
 }
 
 module "aws_network_setup" {
-  source                        = "../modules/network"
+  source                        = "modules/network"
   project_name                  = var.project_name
   env                           = var.env
   az_count                      = var.az_count
@@ -17,7 +17,7 @@ module "aws_network_setup" {
 }
 
 module "lambda_setup" {
-  source                        = "../modules/compute"
+  source                        = "modules/compute"
   project_name                  = var.project_name
   env                           = var.env
   backend_file_name             = var.backend_file_name
@@ -29,7 +29,7 @@ module "lambda_setup" {
 }
 
 module "rds_setup" {
-  source                        = "../modules/database"
+  source                        = "modules/database"
   project_name                  = var.project_name
   env                           = var.env
   private_subnet_ids            = module.network_setup.private_subnet_ids
