@@ -7,9 +7,9 @@ locals {
 }
 
 resource "aws_subnet" "public_subnets" {
-  count = length(var.az_count)
+  count = var.az_count
 
-  availability_zone       = element(var.az_count, count.index)
+  availability_zone       = element(local.az_zones, count.index)
   cidr_block              = cidrsubnet(aws_vpc.vpc.cidr_block, var.subnet_bits, count.index)
   vpc_id                  = aws_vpc.vpc.id
   map_public_ip_on_launch = true
@@ -23,10 +23,10 @@ resource "aws_subnet" "public_subnets" {
 }
 
 resource "aws_subnet" "private_subnets" {
-  count = length(var.az_count)
+  count = var.az_count
 
-  availability_zone       = element(var.az_count, count.index)
-  cidr_block              = cidrsubnet(aws_vpc.vpc.cidr_block, var.subnet_bits, count.index + length(var.az_count))
+  availability_zone       = element(local.az_zones, count.index)
+  cidr_block              = cidrsubnet(aws_vpc.vpc.cidr_block, var.subnet_bits, count.index + var.az_count)
   vpc_id                  = aws_vpc.vpc.id
   map_public_ip_on_launch = false
 
