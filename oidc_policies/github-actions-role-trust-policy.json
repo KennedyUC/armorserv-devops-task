@@ -11,7 +11,8 @@
                 "StringLike": {
                     "token.actions.githubusercontent.com:sub": "repo:kennedyuc/armorserv-devops-task:*"
                 },
-                "StringEquals": {
+                "ForAllValues:StringEquals": {
+                    "token.actions.githubusercontent.com:iss": "https://token.actions.githubusercontent.com",
                     "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
                 }
             }
