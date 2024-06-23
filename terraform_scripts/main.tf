@@ -40,7 +40,6 @@ module "rds_setup" {
   db_username                   = var.db_username
   db_password                   = var.db_password
   rds_sg_id                     = module.network_setup.rds_sg_id
-  rds_sg_name                   = module.network_setup.rds_sg_name
 
   depends_on = [module.network_setup]
 }

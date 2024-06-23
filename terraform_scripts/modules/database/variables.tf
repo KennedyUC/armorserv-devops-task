@@ -42,8 +42,3 @@ variable "rds_sg_id" {
   description = "db security group id"
   type        = string
 }
-
-variable "rds_sg_name" {
-  description = "db security group name"
-  type        = string
-}

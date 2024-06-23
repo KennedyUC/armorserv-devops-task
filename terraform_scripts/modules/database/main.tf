@@ -10,10 +10,8 @@ resource "aws_db_instance" "rds" {
   username             = var.db_username
   password             = var.db_password
   vpc_security_group_ids = [var.rds_sg_id]
-  db_subnet_group_name = var.rds_sg_name
+  db_subnet_group_name = aws_db_subnet_group.rds.name
   skip_final_snapshot  = true
-
-  depends_on = [aws_db_subnet_group.rds]
 
   tags = {
     Name = "${var.project_name}-${var.env}-rds"
