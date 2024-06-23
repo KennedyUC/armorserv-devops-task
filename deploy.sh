@@ -4,8 +4,8 @@ set -e
 # Configuration
 FRONTEND_DIR="frontend"
 BACKEND_DIR="backend"
-LAMBDA_FUNCTION_NAME="test_function"
-ZIP_FILE="test_file.zip"
+LAMBDA_FUNCTION_NAME="node-backend"
+ZIP_FILE="backend.zip"
 LAMBDA_ALIAS="dev"
 
 # Deploy Frontend
