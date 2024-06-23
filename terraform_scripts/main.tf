@@ -4,7 +4,7 @@ module "iam_setup" {
   env                           = var.env
 }
 
-module "aws_network_setup" {
+module "network_setup" {
   source                        = "./modules/network"
   project_name                  = var.project_name
   env                           = var.env
