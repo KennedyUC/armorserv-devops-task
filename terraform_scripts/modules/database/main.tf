@@ -13,6 +13,8 @@ resource "aws_db_instance" "rds" {
   db_subnet_group_name = var.rds_sg_name
   skip_final_snapshot  = true
 
+  depends_on = [aws_db_subnet_group.rds]
+
   tags = {
     Name = "${var.project_name}-${var.env}-rds"
     Env  = var.env
