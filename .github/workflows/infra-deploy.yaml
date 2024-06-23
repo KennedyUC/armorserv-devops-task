@@ -43,6 +43,7 @@ jobs:
       TERRAFORM_VERSION: 1.7.3
       AWS_REGION: us-east-1
       TF_BACKEND_BUCKET: terraform-backend-1470
+      ARTIFACT_BUCKET: artifact-1470
   
     steps:
       - name: Checkout repository
@@ -91,6 +92,7 @@ jobs:
           export TF_VAR_db_name=${{ secrets.DB_NAME }}
           export TF_VAR_db_username=${{ secrets.DB_USERNAME }}
           export TF_VAR_db_password=${{ secrets.DB_PASSWORD }}
+          export TF_VAR_artifact_bucket_name=${{ env.ARTIFACT_BUCKET }}
           
           terraform plan --var-file=${{ env.ENV }}-infra.tfvars -out=plan.tfdata
         working-directory: ${{ env.WORK_DIR }}

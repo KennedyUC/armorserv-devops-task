@@ -2,6 +2,7 @@ module "iam_setup" {
   source                        = "./modules/iam"
   project_name                  = var.project_name
   env                           = var.env
+  artifact_bucket_name          = var.artifact_bucket_name
 }
 
 module "network_setup" {

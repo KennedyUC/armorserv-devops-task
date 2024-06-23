@@ -99,3 +99,8 @@ variable "secret_key" {
   type        = string
   sensitive   = true
 }
+
+variable "artifact_bucket_name" {
+  description = "artifact bucket"
+  type        = string
+}
