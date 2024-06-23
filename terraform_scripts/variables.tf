@@ -10,6 +10,12 @@ variable "env" {
   type        = string
 }
 
+#### iam ####
+variable "artifact_bucket_name" {
+  description = "artifact bucket"
+  type        = string
+}
+
 #### network ####
 
 variable "az_count" {
@@ -66,11 +72,6 @@ variable "db_instance" {
   type        = string
 }
 
-variable "db_name" {
-  description = "db name"
-  type        = string
-}
-
 variable "db_username" {
   description = "db username"
   type        = string
@@ -98,9 +99,4 @@ variable "secret_key" {
   description = "aws user secret key"
   type        = string
   sensitive   = true
-}
-
-variable "artifact_bucket_name" {
-  description = "artifact bucket"
-  type        = string
 }

@@ -27,11 +27,6 @@ variable "db_instance" {
   type        = string
 }
 
-variable "db_name" {
-  description = "db name"
-  type        = string
-}
-
 variable "db_username" {
   description = "db username"
   type        = string

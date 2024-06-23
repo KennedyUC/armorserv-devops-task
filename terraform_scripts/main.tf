@@ -23,7 +23,7 @@ module "lambda_setup" {
   env                           = var.env
   backend_file_name             = var.backend_file_name
   lambda_function_name          = var.lambda_function_name
-  lambda_iam_arn                = module.network_setup.lambda_iam_arn
+  lambda_iam_arn                = module.iam_setup.lambda_iam_arn
   lambda_runtime                = var.lambda_runtime
 
   depends_on = [module.network_setup]
@@ -37,7 +37,6 @@ module "rds_setup" {
   db_storage                    = var.db_storage
   db_engine                     = var.db_engine
   db_instance                   = var.db_instance
-  db_name                       = var.db_name
   db_username                   = var.db_username
   db_password                   = var.db_password
   rds_sg_id                     = module.network_setup.rds_sg_id
