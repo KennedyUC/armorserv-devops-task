@@ -11,9 +11,9 @@ on:
     - terraform_scripts/*
     - terraform_scripts/modules/*
 
-permissions:
-  id-token: write
-  contents: read
+# permissions:
+#   id-token: write
+#   contents: read
 
 jobs:
   setup-project-environment:
