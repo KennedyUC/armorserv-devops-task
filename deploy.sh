@@ -1,11 +1,10 @@
 #!/bin/bash
-set -e
 
 # Configuration
 FRONTEND_DIR="frontend"
 BACKEND_DIR="backend"
-LAMBDA_FUNCTION_NAME="test_function"
-ZIP_FILE="test_file.zip"
+LAMBDA_FUNCTION_NAME="node-backend"
+ZIP_FILE="backend.zip"
 LAMBDA_ALIAS="dev"
 
 # Deploy Frontend
@@ -17,8 +16,6 @@ deploy_frontend() {
   amplify init --yes
   amplify push --yes
 
-  # Build and publish the frontend
-  npm run build
   amplify publish --yes
   echo "Frontend deployed."
 }
@@ -26,12 +23,9 @@ deploy_frontend() {
 # Deploy Backend
 deploy_backend() {
   echo "Deploying backend..."
-  cd ../$BACKEND_DIR
+  cd $BACKEND_DIR
 
-  # Build backend
-  npm run build
-
-  # Zip your lambda function files
+  # Zip lambda function files
   zip -r $ZIP_FILE .
 
   # Update Lambda function code
@@ -44,8 +38,14 @@ deploy_backend() {
   echo "Backend deployed. Alias '$LAMBDA_ALIAS' now points to version $VERSION."
 }
 
-# Execute both deployment functions
-deploy_frontend
-deploy_backend
+# Check CLI argument and call appropriate function
+if [ "$1" == "frontend" ]; then
+  deploy_frontend
+elif [ "$1" == "backend" ]; then
+  deploy_backend
+else
+  echo "Invalid argument. Use 'frontend' or 'backend'."
+  exit 1
+fi
 
 echo "Deployment complete."
