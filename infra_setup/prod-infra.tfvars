@@ -1,0 +1,17 @@
+project_name            = "devops-1470"
+az_count                = 2
+vpc_cidr                = "10.0.0.0/16"
+enable_vpc_dns          = true
+subnet_bits             = 8
+backend_file_name       = "backend"
+lambda_function_name    = "node-backend"
+lambda_runtime          = "nodejs18.x"
+db_storage              = 30
+max_db_storage          = 50
+db_engine               = "mysql"
+db_instance             = "db.t3.micro"
+github_owner            = "kennedyuc"
+github_repo             = "armorserv-devops-task"
+compute_image_type      = "LINUX_CONTAINER"
+compute_image_name      = "aws/codebuild/standard:4.0"
+compute_instance        = "BUILD_GENERAL1_SMALL"

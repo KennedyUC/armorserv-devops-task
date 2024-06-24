@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+    commands:
+      - npm install
+  build:
+    commands:
+      - ls
+  post_build:
+    commands:
+      - zip -r backend.zip .
+      - aws lambda update-function-code --function-name ${function_name} --zip-file fileb://backend.zip
+      - export VERSION=$(aws lambda publish-version --function-name ${function_name} --query 'Version' --output text)
+      - aws lambda update-alias --function-name ${function_name} --name ${alias_name} --function-version $VERSION
+
+artifacts:
+  files:
+    - backend.zip

@@ -3,13 +3,13 @@ name: Deploy AWS Infrastructure
 on:
   push:
     branches:
-    - main
-    - dev
-    - stg
+    - branch_main
+    - branch_dev
+    - branch_stg
     paths:
     - .github/workflows/infra-deploy.yaml
-    - terraform_scripts/*
-    - terraform_scripts/modules/**
+    - infra_setup/*
+    - infra_setup/modules/**
 
 jobs:
   setup-project-environment:
@@ -73,28 +73,34 @@ jobs:
           export TF_VAR_aws_region=${{ env.AWS_REGION }}
           export TF_VAR_db_username=${{ secrets.DB_USERNAME }}
           export TF_VAR_db_password=${{ secrets.DB_PASSWORD }}
-          export TF_VAR_artifact_bucket_name=${{ env.ARTIFACT_BUCKET }}
+          export TF_VAR_artifact_bucket=${{ env.ARTIFACT_BUCKET }}
+          export TF_VAR_github_token=${{ secrets.GITHUB_SECRET }}
+          export TF_VAR_github_branch=${{ env.ENV }}
+          export TF_VAR_env=${{ env.ENV }}
           
           terraform plan --var-file=${{ env.ENV }}-infra.tfvars -out=plan.tfdata
         working-directory: ${{ env.WORK_DIR }}
           
 
-      # - name: Terraform Apply
-      #   run: |
-      #     export TF_VAR_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     export TF_VAR_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          
-      #     terraform apply -auto-approve plan.tfdata
-      #   working-directory: ${{ env.WORK_DIR }}
-
-      - name: Terraform Destroy
+      - name: Terraform Apply
         run: |
           export TF_VAR_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}
           export TF_VAR_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          export TF_VAR_aws_region=${{ env.AWS_REGION }}
-          export TF_VAR_db_username=${{ secrets.DB_USERNAME }}
-          export TF_VAR_db_password=${{ secrets.DB_PASSWORD }}
-          export TF_VAR_artifact_bucket_name=${{ env.ARTIFACT_BUCKET }}
           
-          terraform destroy --var-file=${{ env.ENV }}-infra.tfvars -auto-approve
+          terraform apply -auto-approve plan.tfdata
         working-directory: ${{ env.WORK_DIR }}
+
+      # - name: Terraform Destroy
+      #   run: |
+      #     export TF_VAR_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     export TF_VAR_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     export TF_VAR_aws_region=${{ env.AWS_REGION }}
+      #     export TF_VAR_db_username=${{ secrets.DB_USERNAME }}
+      #     export TF_VAR_db_password=${{ secrets.DB_PASSWORD }}
+      #     export TF_VAR_artifact_bucket=${{ env.ARTIFACT_BUCKET }}
+      #     export TF_VAR_github_token=${{ secrets.GITHUB_SECRET }}
+      #     export TF_VAR_github_branch=${{ env.ENV }}
+      #     export TF_VAR_env=${{ env.ENV }}
+          
+      #     terraform destroy --var-file=${{ env.ENV }}-infra.tfvars -auto-approve
+      #   working-directory: ${{ env.WORK_DIR }}
