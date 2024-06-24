@@ -1,4 +1,4 @@
-# XYZ LLC Web Application Deployment on AWS
+# Web Application Deployment on AWS
 
 This repository contains the infrastructure and CI/CD pipeline setup for XYZ LLC's web application. The application consists of a React/Next.js frontend, a Node.js backend hosted on AWS Lambda, and a MySQL database hosted on Amazon RDS. 
 
